@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Color Preference Test - Visual</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 40px; background: #f0f0f0; }
+    .question-box, .result-box { background: white; padding: 20px; border-radius: 12px; max-width: 600px; margin: auto; }
+    .option { margin: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .option:hover { background-color: #eee; }
+    .color-box { width: 40px; height: 40px; border-radius: 8px; display: inline-block; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="question-box" id="question-box">
+    <h2 id="question">로딩 중...</h2>
+    <div id="options"></div>
+  </div>
+
+  <div class="result-box hidden" id="result-box">
+    <h2>당신의 색 코드</h2>
+    <h1 id="result-code">W-S-C-N</h1>
+    <p id="result-description"></p>
+  </div>
+
+  <script>
+    const questions = [];
+    const colorPairs = [
+      ["#F28C28", "따뜻한 오렌지", "Warm"],
+      ["#00C2A8", "시원한 민트", "Cool"],
+      ["#FFF5B1", "연노랑", "Warm"],
+      ["#8C52FF", "보라", "Cool"],
+      ["#FFB6C1", "연핑크", "Soft"],
+      ["#FF1493", "핫핑크", "Vivid"],
+      ["#C0C0C0", "실버", "Artificial"],
+      ["#8B4513", "브라운", "Natural"],
+      ["#FF4500", "강렬한 오렌지", "Vivid"],
+      ["#4682B4", "스틸블루", "Cool"]
+    ];
+
+    for (let i = 0; i < 48; i++) {
+      const idx = i % colorPairs.length;
+      const pair1 = colorPairs[idx];
+      const pair2 = colorPairs[(idx + 1) % colorPairs.length];
+      questions.push({
+        q: `${i + 1}. 어떤 색이 더 끌리나요?`,
+        options: [
+          { color: pair1[0], label: pair1[1], scores: { [pair1[2]]: 1 } },
+          { color: pair2[0], label: pair2[1], scores: { [pair2[2]]: 1 } }
+        ]
+      });
+    }
+
+    let current = 0;
+    const scores = {
+      Warm: 0, Cool: 0,
+      Soft: 0, Vivid: 0,
+      Classic: 0, Trendy: 0,
+      Natural: 0, Artificial: 0
+    };
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const resultBox = document.getElementById("result-box");
+    const resultCodeEl = document.getElementById("result-code");
+    const resultDescEl = document.getElementById("result-description");
+
+    function showQuestion() {
+      const q = questions[current];
+      questionEl.textContent = q.q;
+      optionsEl.innerHTML = "";
+      q.options.forEach(opt => {
+        const btn = document.createElement("div");
+        btn.className = "option";
+        const swatch = document.createElement("div");
+        swatch.className = "color-box";
+        swatch.style.backgroundColor = opt.color;
+        btn.appendChild(swatch);
+        const label = document.createElement("span");
+        label.textContent = opt.label;
+        btn.appendChild(label);
+        btn.onclick = () => {
+          Object.entries(opt.scores).forEach(([key, val]) => {
+            scores[key] += val;
+          });
+          current++;
+          if (current < questions.length) {
+            showQuestion();
+          } else {
+            showResult();
+          }
+        };
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function showResult() {
+      document.getElementById("question-box").classList.add("hidden");
+      resultBox.classList.remove("hidden");
+      const code =
+        (scores.Warm >= scores.Cool ? "W" : "C") +
+        (scores.Soft >= scores.Vivid ? "S" : "V") +
+        (scores.Classic >= scores.Trendy ? "C" : "T") +
+        (scores.Natural >= scores.Artificial ? "N" : "A");
+      resultCodeEl.textContent = code;
+      resultDescEl.textContent = resultDescriptions[code] || "당신만의 독특한 색 취향을 가지고 계시네요!";
+    }
+
+    const resultDescriptions = {
+      "WSCN": "당신은 따뜻하고 안정적인 감성을 가진 사람입니다. 자연과 조화를 이루는 부드러운 색을 선호하네요.",
+      "CVTA": "당신은 미래적이고 강렬한 시각을 가진 트렌드 리더입니다. 독특하고 실험적인 색감을 좋아합니다."
+    };
+
+    showQuestion();
+  </script>
+</body>
+</html>
