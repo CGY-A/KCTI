@@ -1,103 +1,965 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>컬러 취향 테스트 - 48문항</title>
+  <title>KCTI (Koo's Colormind Type Indicator)</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 40px; background: #f0f0f0; }
-    .question-box, .result-box { background: white; padding: 20px; border-radius: 12px; max-width: 600px; margin: auto; }
-    .option { margin: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-    .option:hover { background-color: #eee; }
-    .color-box { width: 40px; height: 40px; border-radius: 8px; display: inline-block; }
-    .hidden { display: none; }
+    body { font-family: 'Helvetica Neue', sans-serif; background: linear-gradient(to bottom, #e6f0ff, #ffffff); margin: 0; padding: 0; }
+    .container { max-width: 700px; margin: 60px auto; background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    h1 { text-align: center; font-size: 2.5em; font-weight: bold; color: #333; margin-bottom: 20px; }
+    h1 span { font-size: 0.5em; color: #666; }
+    .question-box, .result-box { margin-bottom: 20px; }
+    .result-box.hidden { display: none; }
+    .option { margin: 10px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s ease; }
+    .option:hover { transform: scale(1.03); background-color: #f0f8ff; }
+    .color-box { width: 24px; height: 24px; border-radius: 4px; flex-shrink: 0; }
+    .option-label { font-size: 1em; color: #333; }
+    .progress-container { height: 10px; background: #ddd; border-radius: 5px; overflow: hidden; margin: 20px auto; max-width: 600px; }
+    .progress-bar { height: 100%; width: 0%; background: #3399ff; transition: width 0.3s ease; }
+    #progress-text { text-align: center; font-size: 0.9em; color: #333; margin-top: 8px; }
   </style>
 </head>
 <body>
-
-  <div class="question-box" id="question-box">
-    <h2 id="question">로딩 중...</h2>
-    <div id="options"></div>
+  <div class="container">
+    <h1>KCTI <span>(Koo's Colormind Type Indicator)</span></h1>
+    <div class="question-box" id="question-box">
+      <h2 id="question">질문 로딩...</h2>
+      <div id="options"></div>
+    </div>
+    <div class="result-box hidden" id="result-box">
+      <h2>당신의 색 코드</h2>
+      <h1 id="result-code">W-S-C-N</h1>
+      <p id="result-description"></p>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <div id="progress-text">0 / 48</div>
   </div>
-
-  <div class="result-box hidden" id="result-box">
-    <h2>당신의 색 코드</h2>
-    <h1 id="result-code">W-S-C-N</h1>
-    <p id="result-description"></p>
-  </div>
-
   <script>
-
-    const questions = [{"q": "1. 당신이 더 선호하는 색상은?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "2. 기분 좋을 때 떠오르는 색상은?", "options": [{"text": "살구색", "scores": {"Soft": 1}}, {"text": "선명한 퍼플", "scores": {"Vivid": 1}}]}, {"q": "3. 옷장에서 자주 입는 색은?", "options": [{"text": "클래식 네이비", "scores": {"Classic": 1}}, {"text": "형광 핑크", "scores": {"Trendy": 1}}]}, {"q": "4. 더 편안하게 느껴지는 공간은?", "options": [{"text": "우드톤 자연 인테리어", "scores": {"Natural": 1}}, {"text": "네온 조명의 감각적인 공간", "scores": {"Artificial": 1}}]}, {"q": "5. 좋아하는 커피숍 인테리어는?", "options": [{"text": "나무와 흙색 중심의 공간", "scores": {"Natural": 1}}, {"text": "메탈과 유리의 트렌디한 공간", "scores": {"Artificial": 1}}]}, {"q": "6. 스트레스 해소를 위한 색상은?", "options": [{"text": "라이트 옐로우", "scores": {"Warm": 1, "Soft": 1}}, {"text": "딥 블루", "scores": {"Cool": 1, "Vivid": 1}}]}, {"q": "7. 화장실 타일을 고른다면?", "options": [{"text": "베이지 스톤 느낌", "scores": {"Classic": 1}}, {"text": "블랙 네온 포인트", "scores": {"Trendy": 1}}]}, {"q": "8. 겨울에 입고 싶은 아우터 색상은?", "options": [{"text": "따뜻한 브라운", "scores": {"Warm": 1}}, {"text": "시크한 차콜", "scores": {"Cool": 1}}]}, {"q": "9. 당신의 명함 배경색은?", "options": [{"text": "아이보리", "scores": {"Soft": 1}}, {"text": "형광 민트", "scores": {"Vivid": 1}}]}, {"q": "10. 가장 편안하게 느껴지는 색은?", "options": [{"text": "크림 베이지", "scores": {"Natural": 1}}, {"text": "메탈 실버", "scores": {"Artificial": 1}}]}, {"q": "11. 화장품 패키지로 더 끌리는 색은?", "options": [{"text": "로즈골드", "scores": {"Classic": 1}}, {"text": "네온 오렌지", "scores": {"Trendy": 1}}]}, {"q": "12. 자신을 표현할 수 있는 색은?", "options": [{"text": "은은한 베이지", "scores": {"Soft": 1}}, {"text": "강렬한 레드", "scores": {"Vivid": 1}}]}, {"q": "13. 가방을 산다면 어떤 색?", "options": [{"text": "빈티지 브라운", "scores": {"Classic": 1}}, {"text": "형광 옐로우", "scores": {"Trendy": 1}}]}, {"q": "14. 마음이 차분해지는 색상은?", "options": [{"text": "연한 연두", "scores": {"Natural": 1}}, {"text": "미드나잇 블루", "scores": {"Cool": 1}}]}, {"q": "15. 봄 옷으로 고를 색은?", "options": [{"text": "살구빛 핑크", "scores": {"Warm": 1}}, {"text": "라벤더", "scores": {"Cool": 1}}]}, {"q": "16. 디지털 기기 색상 선택?", "options": [{"text": "매트 블랙", "scores": {"Classic": 1}}, {"text": "샤이니 실버", "scores": {"Artificial": 1}}]}, {"q": "17. 즐겨 쓰는 노트 표지색은?", "options": [{"text": "연갈색", "scores": {"Soft": 1}}, {"text": "비비드 블루", "scores": {"Vivid": 1}}]}, {"q": "18. 친구에게 추천하고 싶은 색은?", "options": [{"text": "따뜻한 핑크", "scores": {"Warm": 1}}, {"text": "시원한 터콰이즈", "scores": {"Cool": 1}}]}, {"q": "19. 명화에 더 어울리는 색감은?", "options": [{"text": "부드러운 색감", "scores": {"Soft": 1}}, {"text": "선명한 색감", "scores": {"Vivid": 1}}]}, {"q": "20. 회의실 벽 컬러로 적절한 색은?", "options": [{"text": "그레이", "scores": {"Classic": 1}}, {"text": "네온 블루", "scores": {"Trendy": 1}}]}, {"q": "21. 방의 커튼 색상은?", "options": [{"text": "베이지 린넨", "scores": {"Natural": 1}}, {"text": "은색 블라인드", "scores": {"Artificial": 1}}]}, {"q": "22. 더 집중이 잘 되는 색상은?", "options": [{"text": "인디고 블루", "scores": {"Cool": 1}}, {"text": "주황 레드", "scores": {"Warm": 1}}]}, {"q": "23. 감성적인 순간 떠오르는 색은?", "options": [{"text": "피치", "scores": {"Soft": 1}}, {"text": "퍼플", "scores": {"Vivid": 1}}]}, {"q": "24. 신뢰감을 주는 색은?", "options": [{"text": "남색", "scores": {"Classic": 1}}, {"text": "메탈릭 블루", "scores": {"Artificial": 1}}]}, {"q": "25. 어떤 색이 더 끌리나요?", "options": [{"color": "#F28C28", "label": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}]}, {"q": "26. 어떤 색이 더 끌리나요?", "options": [{"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}, {"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}]}, {"q": "27. 어떤 색이 더 끌리나요?", "options": [{"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}, {"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}]}, {"q": "28. 어떤 색이 더 끌리나요?", "options": [{"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}, {"color": "#FFB6C1", "label": "연핑크", "scores": {"Soft": 1}}]}, {"q": "29. 어떤 색이 더 끌리나요?", "options": [{"color": "#FFB6C1", "label": "연핑크", "scores": {"Soft": 1}}, {"color": "#FF1493", "label": "핫핑크", "scores": {"Vivid": 1}}]}, {"q": "30. 어떤 색이 더 끌리나요?", "options": [{"color": "#FF1493", "label": "핫핑크", "scores": {"Vivid": 1}}, {"color": "#C0C0C0", "label": "실버", "scores": {"Artificial": 1}}]}, {"q": "31. 어떤 색이 더 끌리나요?", "options": [{"color": "#C0C0C0", "label": "실버", "scores": {"Artificial": 1}}, {"color": "#8B4513", "label": "브라운", "scores": {"Natural": 1}}]}, {"q": "32. 어떤 색이 더 끌리나요?", "options": [{"color": "#8B4513", "label": "브라운", "scores": {"Natural": 1}}, {"color": "#FF4500", "label": "강렬한 오렌지", "scores": {"Vivid": 1}}]}, {"q": "33. 어떤 색이 더 끌리나요?", "options": [{"color": "#FF4500", "label": "강렬한 오렌지", "scores": {"Vivid": 1}}, {"color": "#4682B4", "label": "스틸블루", "scores": {"Cool": 1}}]}, {"q": "34. 어떤 색이 더 끌리나요?", "options": [{"color": "#4682B4", "label": "스틸블루", "scores": {"Cool": 1}}, {"color": "#F28C28", "label": "따뜻한 오렌지", "scores": {"Warm": 1}}]}, {"q": "35. 어떤 색이 더 끌리나요?", "options": [{"color": "#F28C28", "label": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}]}, {"q": "36. 어떤 색이 더 끌리나요?", "options": [{"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}, {"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}]}, {"q": "37. 어떤 색이 더 끌리나요?", "options": [{"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}, {"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}]}, {"q": "38. 어떤 색이 더 끌리나요?", "options": [{"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}, {"color": "#FFB6C1", "label": "연핑크", "scores": {"Soft": 1}}]}, {"q": "39. 어떤 색이 더 끌리나요?", "options": [{"color": "#FFB6C1", "label": "연핑크", "scores": {"Soft": 1}}, {"color": "#FF1493", "label": "핫핑크", "scores": {"Vivid": 1}}]}, {"q": "40. 어떤 색이 더 끌리나요?", "options": [{"color": "#FF1493", "label": "핫핑크", "scores": {"Vivid": 1}}, {"color": "#C0C0C0", "label": "실버", "scores": {"Artificial": 1}}]}, {"q": "41. 어떤 색이 더 끌리나요?", "options": [{"color": "#C0C0C0", "label": "실버", "scores": {"Artificial": 1}}, {"color": "#8B4513", "label": "브라운", "scores": {"Natural": 1}}]}, {"q": "42. 어떤 색이 더 끌리나요?", "options": [{"color": "#8B4513", "label": "브라운", "scores": {"Natural": 1}}, {"color": "#FF4500", "label": "강렬한 오렌지", "scores": {"Vivid": 1}}]}, {"q": "43. 어떤 색이 더 끌리나요?", "options": [{"color": "#FF4500", "label": "강렬한 오렌지", "scores": {"Vivid": 1}}, {"color": "#4682B4", "label": "스틸블루", "scores": {"Cool": 1}}]}, {"q": "44. 어떤 색이 더 끌리나요?", "options": [{"color": "#4682B4", "label": "스틸블루", "scores": {"Cool": 1}}, {"color": "#F28C28", "label": "따뜻한 오렌지", "scores": {"Warm": 1}}]}, {"q": "45. 어떤 색이 더 끌리나요?", "options": [{"color": "#F28C28", "label": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}]}, {"q": "46. 어떤 색이 더 끌리나요?", "options": [{"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}, {"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}]}, {"q": "47. 어떤 색이 더 끌리나요?", "options": [{"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}, {"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}]}, {"q": "48. 어떤 색이 더 끌리나요?", "options": [{"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}, {"color": "#FFB6C1", "label": "연핑크", "scores": {"Soft": 1}}]}];
+    const questions = [
+  {
+    "q": "1. 당신이 더 선호하는 색상은?",
+    "options": [
+      {
+        "text": "따뜻한 오렌지",
+        "scores": {
+          "Warm": 1
+        }
+      },
+      {
+        "text": "차가운 민트",
+        "scores": {
+          "Cool": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "2. 기분 좋을 때 떠오르는 색상은?",
+    "options": [
+      {
+        "text": "살구색",
+        "scores": {
+          "Soft": 1
+        }
+      },
+      {
+        "text": "선명한 퍼플",
+        "scores": {
+          "Vivid": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "3. 옷장에서 자주 입는 색은?",
+    "options": [
+      {
+        "text": "클래식 네이비",
+        "scores": {
+          "Classic": 1
+        }
+      },
+      {
+        "text": "형광 핑크",
+        "scores": {
+          "Trendy": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "4. 더 편안하게 느껴지는 공간은?",
+    "options": [
+      {
+        "text": "우드톤 자연 인테리어",
+        "scores": {
+          "Natural": 1
+        }
+      },
+      {
+        "text": "네온 조명의 감각적인 공간",
+        "scores": {
+          "Artificial": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "5. 좋아하는 커피숍 인테리어는?",
+    "options": [
+      {
+        "text": "나무와 흙색 중심의 공간",
+        "scores": {
+          "Natural": 1
+        }
+      },
+      {
+        "text": "메탈과 유리의 트렌디한 공간",
+        "scores": {
+          "Artificial": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "6. 스트레스 해소를 위한 색상은?",
+    "options": [
+      {
+        "text": "라이트 옐로우",
+        "scores": {
+          "Warm": 1,
+          "Soft": 1
+        }
+      },
+      {
+        "text": "딥 블루",
+        "scores": {
+          "Cool": 1,
+          "Vivid": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "7. 화장실 타일을 고른다면?",
+    "options": [
+      {
+        "text": "베이지 스톤 느낌",
+        "scores": {
+          "Classic": 1
+        }
+      },
+      {
+        "text": "블랙 네온 포인트",
+        "scores": {
+          "Trendy": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "8. 겨울에 입고 싶은 아우터 색상은?",
+    "options": [
+      {
+        "text": "따뜻한 브라운",
+        "scores": {
+          "Warm": 1
+        }
+      },
+      {
+        "text": "시크한 차콜",
+        "scores": {
+          "Cool": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "9. 당신의 명함 배경색은?",
+    "options": [
+      {
+        "text": "아이보리",
+        "scores": {
+          "Soft": 1
+        }
+      },
+      {
+        "text": "형광 민트",
+        "scores": {
+          "Vivid": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "10. 가장 편안하게 느껴지는 색은?",
+    "options": [
+      {
+        "text": "크림 베이지",
+        "scores": {
+          "Natural": 1
+        }
+      },
+      {
+        "text": "메탈 실버",
+        "scores": {
+          "Artificial": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "11. 화장품 패키지로 더 끌리는 색은?",
+    "options": [
+      {
+        "text": "로즈골드",
+        "scores": {
+          "Classic": 1
+        }
+      },
+      {
+        "text": "네온 오렌지",
+        "scores": {
+          "Trendy": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "12. 자신을 표현할 수 있는 색은?",
+    "options": [
+      {
+        "text": "은은한 베이지",
+        "scores": {
+          "Soft": 1
+        }
+      },
+      {
+        "text": "강렬한 레드",
+        "scores": {
+          "Vivid": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "13. 가방을 산다면 어떤 색?",
+    "options": [
+      {
+        "text": "빈티지 브라운",
+        "scores": {
+          "Classic": 1
+        }
+      },
+      {
+        "text": "형광 옐로우",
+        "scores": {
+          "Trendy": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "14. 마음이 차분해지는 색상은?",
+    "options": [
+      {
+        "text": "연한 연두",
+        "scores": {
+          "Natural": 1
+        }
+      },
+      {
+        "text": "미드나잇 블루",
+        "scores": {
+          "Cool": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "15. 봄 옷으로 고를 색은?",
+    "options": [
+      {
+        "text": "살구빛 핑크",
+        "scores": {
+          "Warm": 1
+        }
+      },
+      {
+        "text": "라벤더",
+        "scores": {
+          "Cool": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "16. 디지털 기기 색상 선택?",
+    "options": [
+      {
+        "text": "매트 블랙",
+        "scores": {
+          "Classic": 1
+        }
+      },
+      {
+        "text": "샤이니 실버",
+        "scores": {
+          "Artificial": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "17. 즐겨 쓰는 노트 표지색은?",
+    "options": [
+      {
+        "text": "연갈색",
+        "scores": {
+          "Soft": 1
+        }
+      },
+      {
+        "text": "비비드 블루",
+        "scores": {
+          "Vivid": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "18. 친구에게 추천하고 싶은 색은?",
+    "options": [
+      {
+        "text": "따뜻한 핑크",
+        "scores": {
+          "Warm": 1
+        }
+      },
+      {
+        "text": "시원한 터콰이즈",
+        "scores": {
+          "Cool": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "19. 명화에 더 어울리는 색감은?",
+    "options": [
+      {
+        "text": "부드러운 색감",
+        "scores": {
+          "Soft": 1
+        }
+      },
+      {
+        "text": "선명한 색감",
+        "scores": {
+          "Vivid": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "20. 회의실 벽 컬러로 적절한 색은?",
+    "options": [
+      {
+        "text": "그레이",
+        "scores": {
+          "Classic": 1
+        }
+      },
+      {
+        "text": "네온 블루",
+        "scores": {
+          "Trendy": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "21. 방의 커튼 색상은?",
+    "options": [
+      {
+        "text": "베이지 린넨",
+        "scores": {
+          "Natural": 1
+        }
+      },
+      {
+        "text": "은색 블라인드",
+        "scores": {
+          "Artificial": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "22. 더 집중이 잘 되는 색상은?",
+    "options": [
+      {
+        "text": "인디고 블루",
+        "scores": {
+          "Cool": 1
+        }
+      },
+      {
+        "text": "주황 레드",
+        "scores": {
+          "Warm": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "23. 감성적인 순간 떠오르는 색은?",
+    "options": [
+      {
+        "text": "피치",
+        "scores": {
+          "Soft": 1
+        }
+      },
+      {
+        "text": "퍼플",
+        "scores": {
+          "Vivid": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "24. 신뢰감을 주는 색은?",
+    "options": [
+      {
+        "text": "남색",
+        "scores": {
+          "Classic": 1
+        }
+      },
+      {
+        "text": "메탈릭 블루",
+        "scores": {
+          "Artificial": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "25. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#F28C28",
+        "label": "따뜻한 오렌지",
+        "scores": {
+          "Warm": 1
+        }
+      },
+      {
+        "color": "#556B2F",
+        "label": "올리브",
+        "scores": {
+          "Natural": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "26. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#00C2A8",
+        "label": "시원한 민트",
+        "scores": {
+          "Cool": 1
+        }
+      },
+      {
+        "color": "#DA70D6",
+        "label": "연보라",
+        "scores": {
+          "Soft": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "27. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#FFF5B1",
+        "label": "연노랑",
+        "scores": {
+          "Warm": 1
+        }
+      },
+      {
+        "color": "#20B2AA",
+        "label": "라이트씨그린",
+        "scores": {
+          "Cool": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "28. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#8C52FF",
+        "label": "보라",
+        "scores": {
+          "Cool": 1
+        }
+      },
+      {
+        "color": "#B22222",
+        "label": "파이어브릭",
+        "scores": {
+          "Warm": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "29. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#FFB6C1",
+        "label": "연핑크",
+        "scores": {
+          "Soft": 1
+        }
+      },
+      {
+        "color": "#A9A9A9",
+        "label": "다크그레이",
+        "scores": {
+          "Classic": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "30. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#FF1493",
+        "label": "핫핑크",
+        "scores": {
+          "Vivid": 1
+        }
+      },
+      {
+        "color": "#F0E68C",
+        "label": "카키",
+        "scores": {
+          "Natural": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "31. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#C0C0C0",
+        "label": "실버",
+        "scores": {
+          "Artificial": 1
+        }
+      },
+      {
+        "color": "#7B68EE",
+        "label": "미디움슬레이트블루",
+        "scores": {
+          "Cool": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "32. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#8B4513",
+        "label": "브라운",
+        "scores": {
+          "Natural": 1
+        }
+      },
+      {
+        "color": "#D2691E",
+        "label": "초콜릿",
+        "scores": {
+          "Warm": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "33. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#FF4500",
+        "label": "강렬한 오렌지",
+        "scores": {
+          "Vivid": 1
+        }
+      },
+      {
+        "color": "#FFD700",
+        "label": "골드",
+        "scores": {
+          "Trendy": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "34. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#4682B4",
+        "label": "스틸블루",
+        "scores": {
+          "Cool": 1
+        }
+      },
+      {
+        "color": "#708090",
+        "label": "슬레이트그레이",
+        "scores": {
+          "Classic": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "35. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#FFE4B5",
+        "label": "모카",
+        "scores": {
+          "Soft": 1
+        }
+      },
+      {
+        "color": "#DB7093",
+        "label": "페일바이올렛레드",
+        "scores": {
+          "Vivid": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "36. 어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#DC143C",
+        "label": "크림슨",
+        "scores": {
+          "Vivid": 1
+        }
+      },
+      {
+        "color": "#ADD8E6",
+        "label": "라이트블루",
+        "scores": {
+          "Soft": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#9DC183",
+        "label": "세이지 그린",
+        "scores": {
+          "Natural": 1
+        }
+      },
+      {
+        "color": "#1C1C1C",
+        "label": "샤프 블랙",
+        "scores": {
+          "Trendy": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#1C1C1C",
+        "label": "샤프 블랙",
+        "scores": {
+          "Trendy": 1
+        }
+      },
+      {
+        "color": "#F8F8FF",
+        "label": "펄 화이트",
+        "scores": {
+          "Artificial": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#39FF14",
+        "label": "네온 그린",
+        "scores": {
+          "Vivid": 1
+        }
+      },
+      {
+        "color": "#F8F8FF",
+        "label": "펄 화이트",
+        "scores": {
+          "Artificial": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#39FF14",
+        "label": "네온 그린",
+        "scores": {
+          "Vivid": 1
+        }
+      },
+      {
+        "color": "#FFF700",
+        "label": "레몬 옐로우",
+        "scores": {
+          "Warm": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#C19A6B",
+        "label": "빈티지 카멜",
+        "scores": {
+          "Classic": 1
+        }
+      },
+      {
+        "color": "#FF66CC",
+        "label": "로즈 핑크",
+        "scores": {
+          "Soft": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#39FF14",
+        "label": "네온 그린",
+        "scores": {
+          "Vivid": 1
+        }
+      },
+      {
+        "color": "#C19A6B",
+        "label": "빈티지 카멜",
+        "scores": {
+          "Classic": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#00FFFF",
+        "label": "아쿠아 블루",
+        "scores": {
+          "Cool": 1
+        }
+      },
+      {
+        "color": "#FFF700",
+        "label": "레몬 옐로우",
+        "scores": {
+          "Warm": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#00FFFF",
+        "label": "아쿠아 블루",
+        "scores": {
+          "Cool": 1
+        }
+      },
+      {
+        "color": "#F8F8FF",
+        "label": "펄 화이트",
+        "scores": {
+          "Artificial": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#39FF14",
+        "label": "네온 그린",
+        "scores": {
+          "Vivid": 1
+        }
+      },
+      {
+        "color": "#9DC183",
+        "label": "세이지 그린",
+        "scores": {
+          "Natural": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#F8F8FF",
+        "label": "펄 화이트",
+        "scores": {
+          "Artificial": 1
+        }
+      },
+      {
+        "color": "#9DC183",
+        "label": "세이지 그린",
+        "scores": {
+          "Natural": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#F8F8FF",
+        "label": "펄 화이트",
+        "scores": {
+          "Artificial": 1
+        }
+      },
+      {
+        "color": "#FF66CC",
+        "label": "로즈 핑크",
+        "scores": {
+          "Soft": 1
+        }
+      }
+    ]
+  },
+  {
+    "q": "어떤 색이 더 끌리나요?",
+    "options": [
+      {
+        "color": "#FF66CC",
+        "label": "로즈 핑크",
+        "scores": {
+          "Soft": 1
+        }
+      },
+      {
+        "color": "#FFF700",
+        "label": "레몬 옐로우",
+        "scores": {
+          "Warm": 1
+        }
+      }
+    ]
+  }
+];
 
     let current = 0;
-    const scores = {
-      Warm: 0, Cool: 0,
-      Soft: 0, Vivid: 0,
-      Classic: 0, Trendy: 0,
-      Natural: 0, Artificial: 0
-    };
-
-    const questionEl = document.getElementById("question");
-    const optionsEl = document.getElementById("options");
-    const resultBox = document.getElementById("result-box");
-    const resultCodeEl = document.getElementById("result-code");
-    const resultDescEl = document.getElementById("result-description");
+    const scores = { Warm:0, Cool:0, Soft:0, Vivid:0, Classic:0, Trendy:0, Natural:0, Artificial:0 };
 
     function showQuestion() {
       const q = questions[current];
-      questionEl.textContent = q.q;
-      optionsEl.innerHTML = "";
+      // 동적 넘버링
+      const idx = current + 1;
+      // 기존 숫자 prefix 제거 후 새로운 넘버링 적용
+      const text = q.q.replace(/^\d+\.\s*/, '');
+      document.getElementById('question').textContent = idx + ". " + text;
+      const opts = document.getElementById('options');
+      opts.innerHTML = '';
       q.options.forEach(opt => {
-        const btn = document.createElement("div");
-        btn.className = "option";
-
-        if (opt.color) {
-          const swatch = document.createElement("div");
-          swatch.className = "color-box";
-          swatch.style.backgroundColor = opt.color;
-          btn.appendChild(swatch);
-          const label = document.createElement("span");
-          label.textContent = opt.label;
-          btn.appendChild(label);
-        } else {
-          btn.textContent = opt.text;
-        }
-
+        const btn = document.createElement('div');
+        btn.className = 'option';
+        const sw = document.createElement('div');
+        sw.className = 'color-box';
+        sw.style.backgroundColor = opt.color || '#ccc';
+        btn.appendChild(sw);
+        const lb = document.createElement('span');
+        lb.className = 'option-label';
+        lb.textContent = opt.label || opt.text;
+        btn.appendChild(lb);
         btn.onclick = () => {
-          Object.entries(opt.scores).forEach(([key, val]) => {
-            scores[key] += val;
-          });
+          Object.entries(opt.scores).forEach(([k,v]) => scores[k] += v);
           current++;
-          if (current < questions.length) {
-            showQuestion();
-          } else {
-            showResult();
-          }
+          const pct = Math.round(current / questions.length * 100);
+          document.getElementById('progress-bar').style.width = pct + '%';
+          document.getElementById('progress-text').textContent = current + ' / ' + questions.length;
+          if (current < questions.length) showQuestion();
+          else showResult();
         };
-        optionsEl.appendChild(btn);
+        opts.appendChild(btn);
       });
     }
 
     function showResult() {
-      document.getElementById("question-box").classList.add("hidden");
-      resultBox.classList.remove("hidden");
-      const code =
-        (scores.Warm >= scores.Cool ? "W" : "C") +
-        (scores.Soft >= scores.Vivid ? "S" : "V") +
-        (scores.Classic >= scores.Trendy ? "C" : "T") +
-        (scores.Natural >= scores.Artificial ? "N" : "A");
-      resultCodeEl.textContent = code;
-      resultDescEl.textContent = resultDescriptions[code] || "당신만의 독특한 색 취향을 가지고 계시네요!";
+      document.getElementById('question-box').classList.add('hidden');
+      const code = 
+        (scores.Warm >= scores.Cool ? 'W' : 'C') +
+        (scores.Soft >= scores.Vivid ? 'S' : 'V') +
+        (scores.Classic >= scores.Trendy ? 'C' : 'T') +
+        (scores.Natural >= scores.Artificial ? 'N' : 'A');
+      document.getElementById('result-code').textContent = code;
+      const descMap = {
+        WSCN: '당신은 따뜻하고 안정적인 감성을 가진 사람입니다. 자연과 조화를 이루는 부드러운 색을 선호하네요.',
+        CVTA: '당신은 미래적이고 강렬한 시각을 가진 트렌드 리더입니다. 독특하고 실험적인 색감을 좋아합니다.'
+      };
+      document.getElementById('result-description').textContent = descMap[code] || '당신만의 독특한 색 취향을 가지고 계시네요!';
+      document.getElementById('result-box').classList.remove('hidden');
     }
 
-    const resultDescriptions = {
-      "WSCN": "당신은 따뜻하고 안정적인 감성을 가진 사람입니다. 자연과 조화를 이루는 부드러운 색을 선호하네요.",
-      "CVTA": "당신은 미래적이고 강렬한 시각을 가진 트렌드 리더입니다. 독특하고 실험적인 색감을 좋아합니다."
-    };
-
-    showQuestion();
+    window.addEventListener('DOMContentLoaded', showQuestion);
   </script>
 </body>
 </html>
