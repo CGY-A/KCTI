@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Color Preference Test - Visual</title>
+  <title>Combined Color Test - 48 Questions</title>
   <style>
     body { font-family: sans-serif; text-align: center; padding: 40px; background: #f0f0f0; }
     .question-box, .result-box { background: white; padding: 20px; border-radius: 12px; max-width: 600px; margin: auto; }
@@ -28,32 +28,7 @@
   </div>
 
   <script>
-    const questions = [];
-    const colorPairs = [
-      ["#F28C28", "따뜻한 오렌지", "Warm"],
-      ["#00C2A8", "시원한 민트", "Cool"],
-      ["#FFF5B1", "연노랑", "Warm"],
-      ["#8C52FF", "보라", "Cool"],
-      ["#FFB6C1", "연핑크", "Soft"],
-      ["#FF1493", "핫핑크", "Vivid"],
-      ["#C0C0C0", "실버", "Artificial"],
-      ["#8B4513", "브라운", "Natural"],
-      ["#FF4500", "강렬한 오렌지", "Vivid"],
-      ["#4682B4", "스틸블루", "Cool"]
-    ];
-
-    for (let i = 0; i < 48; i++) {
-      const idx = i % colorPairs.length;
-      const pair1 = colorPairs[idx];
-      const pair2 = colorPairs[(idx + 1) % colorPairs.length];
-      questions.push({
-        q: `${i + 1}. 어떤 색이 더 끌리나요?`,
-        options: [
-          { color: pair1[0], label: pair1[1], scores: { [pair1[2]]: 1 } },
-          { color: pair2[0], label: pair2[1], scores: { [pair2[2]]: 1 } }
-        ]
-      });
-    }
+    const questions = [{"q": "1. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "2. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "3. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "4. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "5. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "6. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "7. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "8. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "9. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "10. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "11. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "12. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "13. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "14. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "15. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "16. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "17. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "18. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "19. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "20. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "21. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "22. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "23. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "24. 어떤 색상이 더 끌리나요?", "options": [{"text": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"text": "차가운 민트", "scores": {"Cool": 1}}]}, {"q": "25. 어떤 색이 더 끌리나요?", "options": [{"color": "#F28C28", "label": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}]}, {"q": "26. 어떤 색이 더 끌리나요?", "options": [{"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}, {"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}]}, {"q": "27. 어떤 색이 더 끌리나요?", "options": [{"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}, {"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}]}, {"q": "28. 어떤 색이 더 끌리나요?", "options": [{"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}, {"color": "#FFB6C1", "label": "연핑크", "scores": {"Soft": 1}}]}, {"q": "29. 어떤 색이 더 끌리나요?", "options": [{"color": "#FFB6C1", "label": "연핑크", "scores": {"Soft": 1}}, {"color": "#FF1493", "label": "핫핑크", "scores": {"Vivid": 1}}]}, {"q": "30. 어떤 색이 더 끌리나요?", "options": [{"color": "#FF1493", "label": "핫핑크", "scores": {"Vivid": 1}}, {"color": "#C0C0C0", "label": "실버", "scores": {"Artificial": 1}}]}, {"q": "31. 어떤 색이 더 끌리나요?", "options": [{"color": "#C0C0C0", "label": "실버", "scores": {"Artificial": 1}}, {"color": "#8B4513", "label": "브라운", "scores": {"Natural": 1}}]}, {"q": "32. 어떤 색이 더 끌리나요?", "options": [{"color": "#8B4513", "label": "브라운", "scores": {"Natural": 1}}, {"color": "#FF4500", "label": "강렬한 오렌지", "scores": {"Vivid": 1}}]}, {"q": "33. 어떤 색이 더 끌리나요?", "options": [{"color": "#FF4500", "label": "강렬한 오렌지", "scores": {"Vivid": 1}}, {"color": "#4682B4", "label": "스틸블루", "scores": {"Cool": 1}}]}, {"q": "34. 어떤 색이 더 끌리나요?", "options": [{"color": "#4682B4", "label": "스틸블루", "scores": {"Cool": 1}}, {"color": "#F28C28", "label": "따뜻한 오렌지", "scores": {"Warm": 1}}]}, {"q": "35. 어떤 색이 더 끌리나요?", "options": [{"color": "#F28C28", "label": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}]}, {"q": "36. 어떤 색이 더 끌리나요?", "options": [{"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}, {"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}]}, {"q": "37. 어떤 색이 더 끌리나요?", "options": [{"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}, {"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}]}, {"q": "38. 어떤 색이 더 끌리나요?", "options": [{"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}, {"color": "#FFB6C1", "label": "연핑크", "scores": {"Soft": 1}}]}, {"q": "39. 어떤 색이 더 끌리나요?", "options": [{"color": "#FFB6C1", "label": "연핑크", "scores": {"Soft": 1}}, {"color": "#FF1493", "label": "핫핑크", "scores": {"Vivid": 1}}]}, {"q": "40. 어떤 색이 더 끌리나요?", "options": [{"color": "#FF1493", "label": "핫핑크", "scores": {"Vivid": 1}}, {"color": "#C0C0C0", "label": "실버", "scores": {"Artificial": 1}}]}, {"q": "41. 어떤 색이 더 끌리나요?", "options": [{"color": "#C0C0C0", "label": "실버", "scores": {"Artificial": 1}}, {"color": "#8B4513", "label": "브라운", "scores": {"Natural": 1}}]}, {"q": "42. 어떤 색이 더 끌리나요?", "options": [{"color": "#8B4513", "label": "브라운", "scores": {"Natural": 1}}, {"color": "#FF4500", "label": "강렬한 오렌지", "scores": {"Vivid": 1}}]}, {"q": "43. 어떤 색이 더 끌리나요?", "options": [{"color": "#FF4500", "label": "강렬한 오렌지", "scores": {"Vivid": 1}}, {"color": "#4682B4", "label": "스틸블루", "scores": {"Cool": 1}}]}, {"q": "44. 어떤 색이 더 끌리나요?", "options": [{"color": "#4682B4", "label": "스틸블루", "scores": {"Cool": 1}}, {"color": "#F28C28", "label": "따뜻한 오렌지", "scores": {"Warm": 1}}]}, {"q": "45. 어떤 색이 더 끌리나요?", "options": [{"color": "#F28C28", "label": "따뜻한 오렌지", "scores": {"Warm": 1}}, {"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}]}, {"q": "46. 어떤 색이 더 끌리나요?", "options": [{"color": "#00C2A8", "label": "시원한 민트", "scores": {"Cool": 1}}, {"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}]}, {"q": "47. 어떤 색이 더 끌리나요?", "options": [{"color": "#FFF5B1", "label": "연노랑", "scores": {"Warm": 1}}, {"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}]}, {"q": "48. 어떤 색이 더 끌리나요?", "options": [{"color": "#8C52FF", "label": "보라", "scores": {"Cool": 1}}, {"color": "#FFB6C1", "label": "연핑크", "scores": {"Soft": 1}}]}];
 
     let current = 0;
     const scores = {
@@ -76,13 +51,19 @@
       q.options.forEach(opt => {
         const btn = document.createElement("div");
         btn.className = "option";
-        const swatch = document.createElement("div");
-        swatch.className = "color-box";
-        swatch.style.backgroundColor = opt.color;
-        btn.appendChild(swatch);
-        const label = document.createElement("span");
-        label.textContent = opt.label;
-        btn.appendChild(label);
+
+        if (opt.color) {
+          const swatch = document.createElement("div");
+          swatch.className = "color-box";
+          swatch.style.backgroundColor = opt.color;
+          btn.appendChild(swatch);
+          const label = document.createElement("span");
+          label.textContent = opt.label;
+          btn.appendChild(label);
+        } else {
+          btn.textContent = opt.text;
+        }
+
         btn.onclick = () => {
           Object.entries(opt.scores).forEach(([key, val]) => {
             scores[key] += val;
